@@ -25,6 +25,43 @@
 document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
 </script>
 
+<style>
+.time {
+  width: 448px;
+  margin: 30px 0 0 10px;
+  float: left;
+  text-align: center;
+  opacity: 0;
+
+  -webkit-transition: opacity 0.4s;
+     -moz-transition: opacity 0.4s;
+       -o-transition: opacity 0.4s;
+          transition: opacity 0.4s;
+}
+
+.elapsed {
+  color: #333;
+  font-size: 2em;
+  float: left;
+  display: inline-block;
+  padding: 0.5em;
+  background-color: #eee;
+  border-radius: 10px;
+}
+
+.elapsed h2,
+.clock h2 {
+  font-size: 0.8em;
+  line-height: 100%;
+  margin: 0;
+  color: #aaa;
+}
+
+.elapsed .mute {
+  color: #ddd;
+}
+</style>
+
 <!--[if lt IE 9]>
                 <script src="lib/js/html5shiv.js"></script>
                 <![endif]-->
@@ -33,17 +70,22 @@ document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.se
 <body>
 
 <div class="reveal">
-
+  <div class="time">
+      <div class="elapsed">
+        <h2>Elapsed</h2>
+        <span id="minutes">00m</span>
+      </div>
+    </div>
   <!-- Any section element inside of this container is displayed as a slide -->
   <div class="slides">
-    <section>
+    <section class="slide-1">
       <h1>Node.js error handling</h1>
 
       <h3><a href="http://twitter.com/raynos">@Raynos</a></h3>
     </section>
 
     <section>
-    <section>
+    <section class="slide-2">
       <h3>We have all seen code like this</h3>
 
       <pre><code data-trim class="javascript">
@@ -57,7 +99,7 @@ function myApp(data, cb) {
       </code></pre>
       <p>Can you spot the mistake?</p>
     </section>
-    <section>
+    <section class="slide-3">
       <h3>Adding error handling is easy</h3>
 
       <pre><code data-trim class="javascript">
@@ -74,7 +116,7 @@ function myApp(data, cb) {
 }       
       </code></pre>      
     </section>
-    <section>
+    <section class="slide-4">
       <h3>Something a little more complex</h3>
 
       <pre><code data-trim class="javascript">
@@ -95,7 +137,7 @@ function createIfNotExist(file, content, cb) {
     </section>
 
     <section>
-      <section>
+      <section class="slide-5">
         <h3>Error handling in web apps</h3>
         
         <pre><code data-trim class="javascript">
@@ -112,7 +154,7 @@ function handleRequest(req, res) {
 }
         </code></pre>
       </section>
-      <section>
+      <section class="slide-6">
         <h3>Error handling in web apps</h3>
         
         <pre><code data-trim class="javascript">
@@ -131,7 +173,7 @@ function handleRequest(req, res) {
 
         <p>Can you spot the problem?</p>
       </section>
-      <section>
+      <section class="slide-7">
         <h3>The solution?</h3>
 
         <pre><code data-trime class="javascript">
@@ -150,7 +192,7 @@ function handleRequest(req, res, opts, cb) {
       </section>
     </section>
 
-    <section>
+    <section class="slide-8">
       <h3>if (err) return cb(err) taken too far</h3>
 
       <pre><code data-trim class="javascript">
@@ -168,7 +210,7 @@ function makeRequest(body) {
 }
       </code></pre>
     </section>
-    <section>
+    <section class="slide-9">
       <h3>Don't shoot errors into space</h3>
 
       <ul>
@@ -178,7 +220,7 @@ function makeRequest(body) {
       </ul>
     </section>
     <section>
-    <section>
+    <section class="slide-10">
       <h3>Logging your errors</h3>
 
       <ul>
@@ -188,7 +230,7 @@ function makeRequest(body) {
         <li>Store the name and args of the method</li>
       </ul>
     </section>
-    <section>
+    <section class="slide-11">
       <h3>A logError function</h3>
 
       <pre><code data-trim class="javascript">
@@ -212,19 +254,34 @@ function logError(req, res, err) {
       </code></pre>
     </section>
 
-    <section>
+    <section class="slide-12">
       <h3>The error page</h3>
 
+      <pre><code data-trim class="javascript">
+var uuid = require("uuid")
+
+function handleRequest(req, res) {
+    var fn = matchRoute(req, res, router)
+
+    fn(req, res, {}, handleError)
+    function handleError(err) {
+        err.id = uuid()
+
+        logError(req, res, err)
+        renderErrorPage(req, res, {
+            id: err.id
+        })
+    }
+}
+      </code></pre>
       <ul>
-        <li>Send human readable (non-technical) messages</li>
         <li>Give them an error id</li>
-        <li>Dont give them a stracktrace (security vulnerability)</li>
       </ul>
     </section>
     </section>
 
     <section>
-    <section>
+    <section class="slide-13">
       <h3>JSON errors</h3>
 
       <pre><code data-trim class="javascript">
@@ -251,7 +308,7 @@ request({ ... }, function (err, res, body) {
 })
       </code></pre>
     </section>
-    <section>
+    <section class="slide-14">
       <h3>Errors are not strings</h3>
 
       <pre><code data-trim class="javascript">
@@ -278,7 +335,7 @@ request({ ... }, function (err, res, body) {
       </code></pre>
     </section>
     </section>
-    <section>
+    <section class="slide-15">
       <h3>Transparent logging</h3>
 
       <pre><code data-trim class="javascript">
@@ -300,7 +357,7 @@ function logged(obj, logger) {
       </code></pre>
     </section>
     <section>
-    <section>
+    <section class="slide-16">
       <h3>The subtle errors</h3>
 
       <pre><code data-trim class="javascript">
@@ -319,7 +376,7 @@ function handleRequest(req, res, opts, cb) {
 
       <p>Can you spot the mistake?</p>
     </section>
-    <section>
+    <section class="slide-17">
       <h3>The subtle errors</h3>
 
       <pre><code data-trim class="javascript">
@@ -341,13 +398,13 @@ function handleRequest(req, res, opts, cb) {
     </section>
     </section>
     <section>
-    <section>
+    <section class="slide-18">
       <h3>Domains to the rescue</h3>
 
       <p>domains allow you to handle thrown exceptions.</p>
       <p>Think of them as uncaughtException but per req/res</p>
     </section>
-    <section>
+    <section class="slide-19">
       <h3>Domains to the rescue</h3>
 
       <pre><code data-trim class="javascript">
@@ -370,7 +427,18 @@ function handleRequest(req, res) {
     </section>
     </section>
 
-    <section>
+    <section class="slide-20">
+      <h3>Modules</h3>
+
+      <ul>
+        <li><a href="github.com/Raynos/error">error</a></li>
+        <li><a href="github.com/Colingo/validate-form">validate-form</a></li>
+        <li><a href="github.com/Raynos/logged-object">logged-object</a></li>
+        <li><a href="github.com/Colingo/routes-router">routes-router</a></li>
+      </ul>
+    </section>
+
+    <section class="slide-21">
       <h3>Crashes without any errors</h3>
 
       <p>Sometimes your process goes down and there are no errors</p>
@@ -378,7 +446,7 @@ function handleRequest(req, res) {
       <p>If you are on joyent just open mdb on the core dump and have a look</p>
     </section>
 
-    <section>
+    <section class="slide-22">
       <h1>Questions?</h1>
 
       <h3><a href="http://twitter.com/raynos">@Raynos</a></h3>
@@ -468,6 +536,41 @@ Reveal.initialize({
     // { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
   ]
 });
+
+var start = new Date(),
+  timeEl = document.querySelector( '.time' ),
+  clockEl = document.getElementById( 'clock' ),
+  hoursEl = document.getElementById( 'hours' ),
+  minutesEl = document.getElementById( 'minutes' ),
+  secondsEl = document.getElementById( 'seconds' );
+
+setInterval( function() {
+
+  timeEl.style.opacity = 1;
+
+  var diff, hours, minutes, seconds,
+    now = new Date();
+
+  diff = now.getTime() - start.getTime();
+  hours = Math.floor( diff / ( 1000 * 60 * 60 ) );
+  minutes = Math.floor( ( diff / ( 1000 * 60 ) ) % 60 );
+  seconds = Math.floor( ( diff / 1000 ) % 60 );
+
+  // clockEl.innerHTML = now.toLocaleTimeString();
+  // hoursEl.innerHTML = zeroPadInteger( hours );
+  // hoursEl.className = hours > 0 ? "" : "mute";
+  minutesEl.innerHTML = zeroPadInteger( minutes ) + "m";
+  minutesEl.className = minutes > 0 ? "" : "mute";
+  console.log("setting minutes", minutes)
+  // secondsEl.innerHTML = ":" + zeroPadInteger( seconds );
+
+}, 1000 );
+
+
+      function zeroPadInteger( num ) {
+        var str = "00" + parseInt( num );
+        return str.substring( str.length - 2 );
+      }
 
 </script>
 
