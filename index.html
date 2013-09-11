@@ -191,25 +191,6 @@ function handleRequest(req, res, opts, cb) {
         </code></pre>
       </section>
     </section>
-
-    <section class="slide-8">
-      <h3>if (err) return cb(err) taken too far</h3>
-
-      <pre><code data-trim class="javascript">
-// browser.js
-function makeRequest(body) {
-    request({
-        uri: "/fetch-stuff",
-        json: body
-    }, function (err, res, body) {
-        if (res.statusCode !== 200) {
-            // At least we are logging errors!
-            return console.error(body)
-        }
-    })
-}
-      </code></pre>
-    </section>
     <section class="slide-9">
       <h3>Don't shoot errors into space</h3>
 
@@ -252,31 +233,6 @@ function logError(req, res, err) {
     })
 }
       </code></pre>
-    </section>
-
-    <section class="slide-12">
-      <h3>The error page</h3>
-
-      <pre><code data-trim class="javascript">
-var uuid = require("uuid")
-
-function handleRequest(req, res) {
-    var fn = matchRoute(req, res, router)
-
-    fn(req, res, {}, handleError)
-    function handleError(err) {
-        err.id = uuid()
-
-        logError(req, res, err)
-        renderErrorPage(req, res, {
-            id: err.id
-        })
-    }
-}
-      </code></pre>
-      <ul>
-        <li>Give them an error id</li>
-      </ul>
     </section>
     </section>
 
