@@ -335,7 +335,24 @@ request({ ... }, function (err, res, body) {
       </code></pre>
     </section>
     </section>
+    <section>
     <section class="slide-15">
+      <h3>Transparent logging</h3>
+
+      <pre><code data-trim class="javascript">
+module.exports = function fetch(name, cb) {
+    db.cache.get(name, function (err, value) {
+        if (err) {
+            logger({ name: "cache.get", args: [name], err: err })
+            return cb(err)
+        }
+
+        cb(null, value)
+    })
+}
+      </code></pre>
+    </section>
+    <section class="slide-16">
       <h3>Transparent logging</h3>
 
       <pre><code data-trim class="javascript">
@@ -356,8 +373,9 @@ function logged(obj, logger) {
 }
       </code></pre>
     </section>
+    </section>
     <section>
-    <section class="slide-16">
+    <section class="slide-17">
       <h3>The subtle errors</h3>
 
       <pre><code data-trim class="javascript">
@@ -376,7 +394,7 @@ function handleRequest(req, res, opts, cb) {
 
       <p>Can you spot the mistake?</p>
     </section>
-    <section class="slide-17">
+    <section class="slide-18">
       <h3>The subtle errors</h3>
 
       <pre><code data-trim class="javascript">
@@ -398,13 +416,13 @@ function handleRequest(req, res, opts, cb) {
     </section>
     </section>
     <section>
-    <section class="slide-18">
+    <section class="slide-19">
       <h3>Domains to the rescue</h3>
 
       <p>domains allow you to handle thrown exceptions.</p>
       <p>Think of them as uncaughtException but per req/res</p>
     </section>
-    <section class="slide-19">
+    <section class="slide-20">
       <h3>Domains to the rescue</h3>
 
       <pre><code data-trim class="javascript">
@@ -427,7 +445,7 @@ function handleRequest(req, res) {
     </section>
     </section>
 
-    <section class="slide-20">
+    <!-- <section class="slide-20">
       <h3>Modules</h3>
 
       <ul>
@@ -436,7 +454,7 @@ function handleRequest(req, res) {
         <li><a href="github.com/Raynos/logged-object">logged-object</a></li>
         <li><a href="github.com/Colingo/routes-router">routes-router</a></li>
       </ul>
-    </section>
+    </section> -->
 
     <section class="slide-21">
       <h3>Crashes without any errors</h3>

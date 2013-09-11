@@ -130,3 +130,79 @@ Strings are not errors, it took me more then a year to finally get this but now
 whenever I look at a regexp checking an error message I cringe.
 
 ## Slide 14
+
+An error is better seen as a type of error, a message, a stacktrace and any
+meta data that makes sense.
+
+In this case adding an attribute makes sense because a certain attribute of
+the request is invalid. 
+
+This is nice because you can use the meta data in the client to handle
+the error in a more generic manner.
+
+## Slide 15
+
+Once we have nice errors the next step is being able to see those
+errors in our logs in context. 
+
+One strategy is to decide that a piece of code is critical and that all
+errors should be logged at every stage to be able to capture any 
+necessary closure state.
+
+This was cool but was way too painful for the amount of value it 
+brought.
+
+## Slide 16
+
+However you can automate this. If you have an object with async
+methods you can wrap the methods and intercept the callback.
+
+If there's an error you can just log that error with the method
+name and the method arguments. This gives a good level of insight
+into your app and keeps your code clean
+
+## Slide 17
+
+Now we might think that were dealing with all the errors now
+but there are subtle issues that are hard to spot.
+
+Can anyone spot the mistake here ?
+
+...
+
+It's kind of hard to see
+
+## Slide 18
+
+It's absolutely not obvouis which is the problem, we forgot to
+handle the null case.
+
+Hands up, Who's had a production crash caused by null?
+
+This problem is a pain to solve however node core has already 
+solved it
+
+## Slide 19
+
+Domains come to the rescue here. Domains allow us to redirect
+the process uncaught exception handler to a domain. This means
+that when we get any kind of javascript error that would
+crash our process we can instead send it to the correct domain
+for that piece of code.
+
+In this case correct domain means the domain handling that particular
+req/res pair.
+
+## Slide 20
+
+In our central route handler we just create a domain, and run our
+route handler in the domain. Internally the domain binds all the 
+functions and callbacks to the domain. This means that any thrown
+errors will go to the handleError function.
+
+This does what we want, the res can render an error page and the
+server doesn't crash.
+
+## Slide 21
+
+FFFFFFFFFFFFFff----
