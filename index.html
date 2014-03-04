@@ -79,345 +79,149 @@ document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.se
   <!-- Any section element inside of this container is displayed as a slide -->
   <div class="slides">
     <section class="slide-1">
-      <h1>Node.js error handling</h1>
+      <h1>HTTP the web framework</h1>
 
       <h3><a href="http://twitter.com/raynos">@Raynos</a></h3>
     </section>
 
-    <section>
     <section class="slide-2">
-      <h3>We have all seen code like this</h3>
+      <h3><code>require('http')</code> is all you need </h3>
 
-      <pre><code data-trim class="javascript">
-function myApp(data, cb) {
-    doSomethingAsync(data, function (err, result) {
-        computeResult(result, function (err, result) {
-            cb(null, result)
-        })
-    })
-}
-      </code></pre>
-      <p>Can you spot the mistake?</p>
+      <br>
+      <p>Because of `npm`, we no longer need off the shelf
+        web frameworks</p>
     </section>
+
+    <section>
     <section class="slide-3">
-      <h3>Adding error handling is easy</h3>
+      <h3>The origins</h3>
 
-      <pre><code data-trim class="javascript">
-function myApp(data, cb) {
-    doSomethingAsync(data, function (err, result) {
-        if (err) return cb(err)
-
-        computeResult(result, function (err, result) {
-            if (err) return cb(err)
-
-            cb(null, result)
-        })
-    })
-}       
-      </code></pre>      
+      <br>
+      <p>Fed up with `express`. It's bad, but that's for 
+        another talk</p>
     </section>
+
     <section class="slide-4">
-      <h3>Something a little more complex</h3>
+      <h3>The origins</h3>
 
-      <pre><code data-trim class="javascript">
-function createIfNotExist(file, content, cb) {
-    fs.stat(file, function (err, stat) {
-        // if err is a no such file then create it
-        if (err.code === "ENOENT") {
-            fs.writeFile(file, content, cb)
-        } else if (err) {
-            cb(err)
-        } else {
-            cb(null, null)
-        }
-    })
-}
-      </code></pre>
+      <br>
+      <p>Wanting a better approach, finding inspiration in
+        `isaacs/npm-www` and `mikeal/tako`.</p>
+    </section>
+
+    <section class="slide-5">
+      <h3>The origins</h3>
+
+      <p>Lessons from `isaac/npm-www`</p>
+      <br>
+      <ul>
+        <li>No frameworks, only modules</li>
+        <li>No MVC, just routes</li>
+        <li>Req/res helpers are small functions</li>
+        <li>`express` is a glorified router</li>
+      </ul>
+    </section>
+
+    <section class="slide-6">
+      <h3>The origins</h3>
+
+      <p>Lessons from `mikeal/tako`</p>
+      <br>
+      <ul>
+        <li>Frameworks are glorified routers</li>
+        <li>Application wide 404/500 pages</li>
+        <li>Templates/views are complex</li>
+      </ul>
     </section>
     </section>
 
     <section>
-      <section class="slide-5">
-        <h3>Error handling in web apps</h3>
-        
-        <pre><code data-trim class="javascript">
-function handleRequest(req, res) {
-    parseJSONBody(req, res, function (err, body) {
-        if (err) return DO_SOMETHING
+    <section class="slide-7">
+      <h3>The experiment</h3>
 
-        model.fetchStuff(body.id, function (err, record) {
-            if (err) return DO_SOMETHING
-
-            res.end(JSON.stringify(record))
-        })
-    })
-}
-        </code></pre>
-      </section>
-      <section class="slide-6">
-        <h3>Error handling in web apps</h3>
-        
-        <pre><code data-trim class="javascript">
-function handleRequest(req, res) {
-    parseJSONBody(req, res, function (err, body) {
-        if (err) return res.end(err.message)
-
-        model.fetchStuff(body.id, function (err, record) {
-            if (err) return res.end(err.message)
-
-            res.end(JSON.stringify(record))
-        })
-    })
-}
-        </code></pre>
-
-        <p>Can you spot the problem?</p>
-      </section>
-      <section class="slide-7">
-        <h3>The solution?</h3>
-
-        <pre><code data-trime class="javascript">
-function handleRequest(req, res, opts, cb) {
-    parseJSONBody(req, res, function (err, body) {
-        if (err) return cb(err)
-
-        model.fetchStuff(body.id, function (err, record) {
-            if (err) return cb(err)
-
-            res.end(JSON.stringify(record))
-        })
-    })
-}
-        </code></pre>
-      </section>
+      <br>
+      <p>`Raynos/routil`, the underscore of `http`</p>
     </section>
+    <section class="slide-8">
+      <h3>The experiment</h3>
+
+      <p>Lessons learned</p>
+      <br>
+      <ul>
+        <li>Makes collaboration difficult</li>
+        <li>Makes mixing and matching difficult</li>
+        <li>Hard to deprecate subsets</li>
+        <li>Coupling gives no advantages</li>
+      </ul>
+    </section>
+    </section>
+
+    <section>
     <section class="slide-9">
-      <h3>Don't shoot errors into space</h3>
+      <h3>The modules</h3>
 
-      <ul>
-        <li>res.end(err) is not the same as cb(err)</li>
-        <li>Your process should be handling errors</li>
-        <li>It's even worse if you don't handle errors in the browser</li>
-      </ul>
+      <br>
+      <p>publishing to `npm` is easy. Thus modules are born</p>
     </section>
-    <section>
+
     <section class="slide-10">
-      <h3>Logging your errors</h3>
+      <h3>The modules</h3>
 
-      <ul>
-        <li>Store the req url + headers</li>
-        <li>Store the session context</li>
-        <li>Store a unique error id</li>
-        <li>Store the name and args of the method</li>
-      </ul>
+      <pre><code data-trim class="javascript">
+var sendJson = require('send-data/json')
+var db = require('./db.js')
+
+module.exports = function* getUser(req, res, opts) {
+  var user = yield db.get.bind(db, opts.id)
+
+  yield sendJson(req, res, user)
+}
+      </code></pre>
     </section>
+
     <section class="slide-11">
-      <h3>A logError function</h3>
+      <h3>The modules</h3>
 
       <pre><code data-trim class="javascript">
-var logger = bunyan.createLogger({ ... })
+var jsonBody = require('body/json')
+var db = require('./db.js')
 
-// in router.js
-function logError(req, res, err) {
-    logger.error({
-        methodName: value.name,
-        error: extend(value.err, {
-            stack: value.err.stack,
-            name: value.err.name
-        }),
-        id: err.id,
-        args: value.args,
-        req: req,
-        res: res,
-        user: req.user
-    })
+module.exports = function* saveUser(req, res, opts) {
+  var body = yield jsonBody.bind(null, req, res)
+
+  yield db.users.put.bind(db.users, opts.id, body)
 }
       </code></pre>
     </section>
+
+    <section class="slide-12">
+      <h3>The modules</h3>
+
+      <pre><code data-trim class="javascript">
+var Router = require('routes-router')
+var http = require('http')
+
+var router = Router({
+  errorHandler: function (req, res, err) {
+    res.statusCode = 500
+    res.end("500: Unknown error " + err.message)
+  }
+})
+
+router.addRoute("/oops", function (req, res, opts, cb) {
+  cb(new Error("oops!"))
+})
+
+http.createServer(router).listen(3000)
+      </code></pre>
     </section>
 
-    <section>
     <section class="slide-13">
-      <h3>JSON errors</h3>
+      <h3>The modules</h3>
 
-      <pre><code data-trim class="javascript">
-// server.js
-function handleRequest(req, res) {
-    model.fetch(function (err, data) {
-        if (err) return sendJson(req, res, {
-          message: err.message
-        })
-
-        sendJson(req, res, { data: data })
-    })
-}
-      </code></pre>
-
-      <pre><code data-trim class="javascript">
-// browser.js
-request({ ... }, function (err, res, body) {
-    if (body.message) {
-        if (/Invalid email/.test(body.message)) {
-            validationElem.textContent = "Invalid email"
-        }
-    }
-})
-      </code></pre>
-    </section>
-    <section class="slide-14">
-      <h3>Errors are not strings</h3>
-
-      <pre><code data-trim class="javascript">
-// server.js
-function handleRequest(req, res) {
-    model.fetch(function (err, data) {
-        if (err) return sendJson(req, res, {
-          message: err.message,
-          type: "invalid.email",
-          attribute: "email"
-        })
-    })
-}
-      </code></pre>
-
-      <pre><code data-trim class="javascript">
-// browser.js
-request({ ... }, function (err, res, body) {
-    if (body.type && body.type.substr(0, 7) === "invalid") {
-        validationElems[body.attribute].textContent =
-            "Invalid " + body.attribute
-    }
-})
-      </code></pre>
-    </section>
-    </section>
-    <section>
-    <section class="slide-15">
-      <h3>Transparent logging</h3>
-
-      <pre><code data-trim class="javascript">
-module.exports = function fetch(name, cb) {
-    db.cache.get(name, function (err, value) {
-        if (err) {
-            logger({ name: "cache.get", args: [name], err: err })
-            return cb(err)
-        }
-
-        cb(null, value)
-    })
-}
-      </code></pre>
-    </section>
-    <section class="slide-16">
-      <h3>Transparent logging</h3>
-
-      <pre><code data-trim class="javascript">
-function logged(obj, logger) {
-    Object.keys(obj).forEach(function (key) { var fn = obj[key];
-        obj[key] = function () {
-            var args = slice.call(arguments), cb = args.pop()
-
-            return fn.apply(this, args.concat([function (err) {
-                if (err) logger({
-                    name: key, args: args, err: err
-                })
-
-                cb.apply(this, arguments)
-            }]))
-        }
-    })
-}
-      </code></pre>
-    </section>
-    </section>
-    <section>
-    <section class="slide-17">
-      <h3>The subtle errors</h3>
-
-      <pre><code data-trim class="javascript">
-function handleRequest(req, res, opts, cb) {
-    getSession(req, res, function (err, user) {
-        if (err) return cb(err)
-
-        fetchRecords(user.email, function (err, records) {
-            if (err) return cb(err)
-
-            sendJson(req, res, records)
-        })
-    })
-}
-      </code></pre>
-
-      <p>Can you spot the mistake?</p>
-    </section>
-    <section class="slide-18">
-      <h3>The subtle errors</h3>
-
-      <pre><code data-trim class="javascript">
-function handleRequest(req, res, opts, cb) {
-    getSession(req, res, function (err, user) {
-        if (err) return cb(err)
-
-        // TypeError: Cannot read property 'email' of null
-        fetchRecords(user.email, function (err, records) {
-            if (err) return cb(err)
-
-            sendJson(req, res, records)
-        })
-    })
-}
-      </code></pre>
-
-      <p>Classic null property access errors</p>
-    </section>
-    </section>
-    <section>
-    <section class="slide-19">
-      <h3>Domains to the rescue</h3>
-
-      <p>domains allow you to handle thrown exceptions.</p>
-      <p>Think of them as uncaughtException but per req/res</p>
-    </section>
-    <section class="slide-20">
-      <h3>Domains to the rescue</h3>
-
-      <pre><code data-trim class="javascript">
-var domain = require("domain")
-
-function handleRequest(req, res) {
-    var fn = matchRoute(req, res, router)
-    var d = domain.create()
-    d.add(req)
-    d.add(res)
-    d.on("error", handleError)
-
-    d.run(function () {
-        fn(req, res, {}, handleError)
-    })
-
-    function handleError() { ... }
-}
-      </code></pre>
-    </section>
-    </section>
-
-    <!-- <section class="slide-20">
-      <h3>Modules</h3>
-
-      <ul>
-        <li><a href="github.com/Raynos/error">error</a></li>
-        <li><a href="github.com/Colingo/validate-form">validate-form</a></li>
-        <li><a href="github.com/Raynos/logged-object">logged-object</a></li>
-        <li><a href="github.com/Colingo/routes-router">routes-router</a></li>
-      </ul>
-    </section> -->
-
-    <section class="slide-21">
-      <h3>Crashes without any errors</h3>
-
-      <p>Sometimes your process goes down and there are no errors</p>
-      <p>Thankfully you will have a core dump</p>
-      <p>If you are on joyent just open mdb on the core dump and have a look</p>
+      <a href="https://github.com/Raynos/http-framework/#modules">
+        And many more!
+      </a>
     </section>
 
     <section class="slide-22">
@@ -426,58 +230,26 @@ function handleRequest(req, res) {
       <h3><a href="http://twitter.com/raynos">@Raynos</a></h3>
     </section>
 
-    <!-- Talk (Errors):
+    <!-- Talk (http):
 
-talk about error handling in webs apps being important
-show a demo of standard error handling in web apps (naive way)
-tell people why if (err) return res.end(err) is bad (don't send errors into space!)
-talk about logging and central error handling.
-talk about 500 pages, talk about messaging on 500 pages and showing error names / types
-talk about res.json({ message: String }). Errors are not strings! If you ever regexp check an error in client code something is wrong.
-show bunyan as example, show simplified version of logged.js. mention how seeing the method name of an where the error came from is super useful
-talk about domains. Explain null pointer exceptions being the bane of your life.
-show example of how to use domains
-show example of how to use domains centrally together with the logger
-last slide should talk about "what if a server crashes and there are no errors in the log". suggests looking for core dumps and mdb. -->
+Demonstrate how require("http") can be effectively used as a 
+framework by combining it with small modules that do one 
+thing well. Currently people still think I'm joking when I say
+"require('http') is my framework"
 
-<!-- 
-var slice = Array.prototype.slice
- 
-module.exports = logged
- 
-function logged(obj, log) {
-    return Object.keys(obj).reduce(function (acc, key) {
-        var fn = obj[key]
-        if (typeof fn === "function") {
-            acc[key] = interceptAndLog({ method: key, fn: fn, log: log })
-        } else {
-            acc[key] = fn
-        }
-        return acc
-    }, {})
-}
- 
-function interceptAndLog(opts) {
-    return function logger() {
-        var args = slice.call(arguments)
-        var callback = args.pop()
- 
-        return opts.fn.apply(this, args.concat([intercepted]))
- 
-        function intercepted(err) {
-            if (err) {
-                opts.log({
-                    name: opts.method,
-                    args: args,
-                    err: err
-                })
-            }
- 
-            return callback.apply(this, arguments)
-        }
-    }
-}
- -->
+ - Talk about the origins from npm-www and tako. How I saw 
+    other people building effective web apps without a 
+    framework and how it motivated me to do so.
+ - talk briefly about routil, an underscore style grab bag of 
+    http utilities I wrote. The motivations and why it 
+    turned out to be a bad idea.
+ - talk about various individual modules that were spawned. 
+    Discuss the freedom that you get from using modules 
+    vs a framework.
+ - give an example of what framework-less web code looks like.
+ - talk about the things we lose without frameworks.
+
+-->
 
   </div>
 </div>
