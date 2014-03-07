@@ -480,10 +480,10 @@ body {
 	    -ms-perspective-origin: 50% 50%;
 	        perspective-origin: 50% 50%;
 }
-	.reveal .roll:hover {
+	/*.reveal .roll:hover {
 		background: none;
 		text-shadow: none;
-	}
+	}*/
 .reveal .roll span {
 	display: block;
 	position: relative;
@@ -510,14 +510,14 @@ body {
 	   -moz-backface-visibility: hidden;
 	        backface-visibility: hidden;
 }
-	.reveal .roll:hover span {
+	/*.reveal .roll:hover span {
 	    background: rgba(0,0,0,0.5);
 
 	    -webkit-transform: translate3d( 0px, 0px, -45px ) rotateX( 90deg );
 	       -moz-transform: translate3d( 0px, 0px, -45px ) rotateX( 90deg );
 	        -ms-transform: translate3d( 0px, 0px, -45px ) rotateX( 90deg );
 	            transform: translate3d( 0px, 0px, -45px ) rotateX( 90deg );
-	}
+	}*/
 .reveal .roll span:after {
 	content: attr(data-title);
 

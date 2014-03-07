@@ -14,7 +14,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-<link rel="stylesheet" href="css/reveal.min.css">
+<link rel="stylesheet" href="css/reveal.css">
 <link rel="stylesheet" href="css/theme/night.css" id="theme">
 
 <!-- For syntax highlighting -->
@@ -171,10 +171,11 @@ document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.se
 var sendJson = require('send-data/json')
 var db = require('./db.js')
 
+// GET /users/:id
 module.exports = function* getUser(req, res, opts) {
-  var user = yield db.get.bind(db, opts.id)
+  var user = yield db.users.get.bind(db.users, opts.id)
 
-  yield sendJson(req, res, user)
+  sendJson(req, res, user)
 }
       </code></pre>
     </section>
@@ -186,6 +187,7 @@ module.exports = function* getUser(req, res, opts) {
 var jsonBody = require('body/json')
 var db = require('./db.js')
 
+// POST /users
 module.exports = function* saveUser(req, res, opts) {
   var body = yield jsonBody.bind(null, req, res)
 
@@ -225,7 +227,78 @@ http.createServer(router).listen(3000)
     </section>
     </section>
 
-    <section class="slide-22">
+    <section style='padding: 0' class="slide-14">
+      <h3>A normal example</h3>
+
+      <pre><code data-trim  class="javascript" style='font-size: 18px; line-height: 19px'>
+// require statements somewhere
+var renderUserPage = require('./views/user-page.js');
+var validateUser = require('./validations/user.js');
+var router = Router();
+router.addRoute('/user/:id', {
+    GET: function* renderPage(req, res, opts) {
+        var user = yield db.users.get.bind(db.users, opts.id);
+        sendHtml(req, res, renderUserPage({
+            title: 'Editing user ' + user.name,
+            name: user.name, email: user.email
+        }));
+    },
+    POST: function* updateUser() {
+        var body = yield formBody.bind(null, req, res);
+        var error = validateUser(body);
+        if (error) yield error;
+        yield db.users.put.bind(db.users, opts.id, body);
+        redirecter(req, res, '/users/' + opts.id + '/edit');
+    }
+});
+http.createServer(router).listen(3000);
+      </code></pre>
+    </section>
+
+    <section>
+    <section class="slide-15">
+      <h3>Modules v Frameworks</h3>
+
+      <br>
+      <p>Which is right for you</p>
+    </section>
+
+    <section class="slide-16">
+      <h3>Modules v Frameworks</h3>
+
+      <p>The pros</p>
+
+      <ul>
+        <li>You structure your application</li>
+        <li>Individual versioning, pick and mix.</li>
+        <li>Distributed development, no lock in.</li>
+      <ul>
+    </section>
+
+    <section class="slide-17">
+      <h3>Module v Frameworks</h3>
+
+      <p>The cons</p>
+
+      <ul>
+        <li>No centralized contributions</li>
+        <li>Difficult to bake security in.</li>
+        <li>No centralized opinion === shoot yourself in the foot</li>
+      </ul>
+    </section>
+    </section>
+
+    <section class="slide-18">
+      <h3><a href="http://github.com/Raynos/http-framework">`http-framework`</a></h3>
+
+      <br>
+      <p>A collection of examples and documentation for this approach</p>
+
+      <br>
+      <p> Contributions welcome </p>
+    </section>
+
+    <section class="slide-19">
       <h1>Questions?</h1>
 
       <h3><a href="http://twitter.com/raynos">@Raynos</a></h3>
