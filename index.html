@@ -192,6 +192,8 @@ module.exports = function* saveUser(req, res, opts) {
   var body = yield jsonBody.bind(null, req, res)
 
   yield db.users.put.bind(db.users, opts.id, body)
+
+  res.end('OK')
 }
       </code></pre>
     </section>
