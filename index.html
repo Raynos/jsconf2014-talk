@@ -4,10 +4,10 @@
 <head>
 <meta charset="utf-8">
 
-<title>HTTP the web framework</title>
+<title>Modular frontend with NPM and pals</title>
 
-<meta name="description" content="error-handling with domains in Node.js">
-<meta name="author" content="Forrest L Norvell and Domenic Denicola">
+<meta name="description" content="writing modular javascript">
+<meta name="author" content="Jake Verbaten">
 
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -79,254 +79,29 @@ document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.se
   <!-- Any section element inside of this container is displayed as a slide -->
   <div class="slides">
     <section class="slide-1">
-      <h1>HTTP the web framework</h1>
+      <h1>Modular frontend with NPM & pals</h1>
 
       <h3><a href="http://twitter.com/raynos">@Raynos</a></h3>
     </section>
 
     <section class="slide-2">
-      <h3><code>require('http')</code> is all you need </h3>
-
-      <br>
-      <p>Because of `npm`, we no longer need off the shelf
-        web frameworks</p>
+      
     </section>
 
-    <section>
-    <section class="slide-3">
-      <h3>The origins</h3>
+    
+    <!-- Talk (npm):
 
-      <br>
-      <p>Fed up with `express`. It's bad, but that's for 
-        another talk</p>
-    </section>
+  This talk is about a modular frontend which is an approach not common to most frontend developers. No jQuery, no frameworks. Instead many small, simple abstractions are used, published to npm and bundled with browserify.
 
-    <section class="slide-4">
-      <h3>The origins</h3>
+The NPM-style frontend prefers modularity and simple abstractions that do one thing well. THis talk includes:
 
-      <br>
-      <p>Wanting a better approach, finding inspiration in
-        `isaacs/npm-www` and `mikeal/tako`.</p>
-    </section>
+Various approaches to creating standalone “components” or “widgets” that are published to npm, including styles & templates.
+How to compose various modules together to build your own “framework” with your own trade offs.
+How to compose an application from smaller applications
+Build small UI components with thin interfaces that you glue together in your application.
+Your entry point is small, containing the minimal glue code and each UI component addresses its own concerns.
 
-    <section class="slide-5">
-      <h3>The origins</h3>
-
-      <p>Lessons from `isaac/npm-www`</p>
-      <br>
-      <ul>
-        <li>No frameworks, only modules</li>
-        <li>No MVC, just routes</li>
-        <li>Req/res helpers are small functions</li>
-        <li>`express` is a glorified router</li>
-      </ul>
-    </section>
-
-    <section class="slide-6">
-      <h3>The origins</h3>
-
-      <p>Lessons from `mikeal/tako`</p>
-      <br>
-      <ul>
-        <li>Frameworks are glorified routers</li>
-        <li>Application wide 404/500 pages</li>
-        <li>Templates/views are complex</li>
-      </ul>
-    </section>
-    </section>
-
-    <section>
-    <section class="slide-7">
-      <h3>The experiment</h3>
-
-      <br>
-      <p>`Raynos/routil`, the underscore of `http`</p>
-    </section>
-    <section class="slide-8">
-      <h3>The experiment</h3>
-
-      <p>Lessons learned</p>
-      <br>
-      <ul>
-        <li>Makes collaboration difficult</li>
-        <li>Makes mixing and matching difficult</li>
-        <li>Hard to deprecate subsets</li>
-        <li>Coupling gives no advantages</li>
-      </ul>
-    </section>
-    </section>
-
-    <section>
-    <section class="slide-9">
-      <h3>The modules</h3>
-
-      <br>
-      <p>publishing to `npm` is easy. Thus modules are born</p>
-    </section>
-
-    <section class="slide-10">
-      <h3>The modules</h3>
-
-      <pre><code data-trim class="javascript">
-var sendJson = require('send-data/json')
-var db = require('./db.js')
-
-// GET /users/:id
-module.exports = function* getUser(req, res, opts) {
-  var user = yield db.users.get.bind(db.users, opts.id)
-
-  sendJson(req, res, user)
-}
-      </code></pre>
-    </section>
-
-    <section class="slide-11">
-      <h3>The modules</h3>
-
-      <pre><code data-trim class="javascript">
-var jsonBody = require('body/json')
-var db = require('./db.js')
-
-// PUT /users/:id
-module.exports = function* saveUser(req, res, opts) {
-  var body = yield jsonBody.bind(null, req, res)
-
-  yield db.users.put.bind(db.users, opts.id, body)
-
-  res.end('OK')
-}
-      </code></pre>
-    </section>
-
-    <section class="slide-12">
-      <h3>The modules</h3>
-
-      <pre><code data-trim class="javascript">
-var Router = require('routes-router')
-var http = require('http')
-
-var router = Router({
-  errorHandler: function (req, res, err) {
-    res.statusCode = 500
-    res.end("500: Unknown error " + err.message)
-  }
-})
-
-router.addRoute("/oops", function (req, res, opts, cb) {
-  cb(new Error("oops!"))
-})
-
-http.createServer(router).listen(3000)
-      </code></pre>
-    </section>
-
-    <section class="slide-13">
-      <h3>The modules</h3>
-
-      <a href="https://github.com/Raynos/http-framework/#modules">
-        And many more!
-      </a>
-    </section>
-    </section>
-
-    <section style='padding: 0' class="slide-14">
-      <h3>A normal example</h3>
-
-      <pre><code data-trim  class="javascript" style='font-size: 18px; line-height: 19px'>
-// require statements somewhere
-var renderUserPage = require('./views/user-page.js');
-var validateUser = require('./validations/user.js');
-var router = Router();
-router.addRoute('/user/:id', {
-    GET: function* renderPage(req, res, opts) {
-        var user = yield db.users.get.bind(db.users, opts.id);
-        sendHtml(req, res, renderUserPage({
-            title: 'Editing user ' + user.name,
-            name: user.name, email: user.email
-        }));
-    },
-    POST: function* updateUser() {
-        var body = yield formBody.bind(null, req, res);
-        var error = validateUser(body);
-        if (error) yield error;
-        yield db.users.put.bind(db.users, opts.id, body);
-        redirecter(req, res, '/users/' + opts.id + '/edit');
-    }
-});
-http.createServer(router).listen(3000);
-      </code></pre>
-    </section>
-
-    <section>
-    <section class="slide-15">
-      <h3>Modules v Frameworks</h3>
-
-      <br>
-      <p>Which is right for you</p>
-    </section>
-
-    <section class="slide-16">
-      <h3>Modules v Frameworks</h3>
-
-      <p>The pros</p>
-
-      <br>
-      <ul>
-        <li>You structure your application</li>
-        <li>Individual versioning, pick and mix.</li>
-        <li>Distributed development, no lock in.</li>
-      <ul>
-    </section>
-
-    <section class="slide-17">
-      <h3>Module v Frameworks</h3>
-
-      <p>The cons</p>
-
-      <br>
-      <ul>
-        <li>No centralized contributions</li>
-        <li>Difficult to bake security in.</li>
-        <li>shoot yourself in the foot</li>
-      </ul>
-    </section>
-    </section>
-
-    <section class="slide-18">
-      <h3><a href="http://github.com/Raynos/http-framework">`http-framework`</a></h3>
-
-      <br>
-      <p>A collection of examples and documentation for this approach</p>
-
-      <br>
-      <p> Contributions welcome </p>
-    </section>
-
-    <section class="slide-19">
-      <h1>Thanks.</h1>
-
-      <h3><a href="http://twitter.com/raynos">@Raynos</a></h3>
-    </section>
-
-    <!-- Talk (http):
-
-Demonstrate how require("http") can be effectively used as a 
-framework by combining it with small modules that do one 
-thing well. Currently people still think I'm joking when I say
-"require('http') is my framework"
-
- - Talk about the origins from npm-www and tako. How I saw 
-    other people building effective web apps without a 
-    framework and how it motivated me to do so.
- - talk briefly about routil, an underscore style grab bag of 
-    http utilities I wrote. The motivations and why it 
-    turned out to be a bad idea.
- - talk about various individual modules that were spawned. 
-    Discuss the freedom that you get from using modules 
-    vs a framework.
- - give an example of what framework-less web code looks like.
- - talk about the things we lose without frameworks.
-
+    
 -->
 
   </div>
