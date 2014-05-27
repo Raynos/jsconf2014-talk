@@ -79,29 +79,67 @@ document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.se
   <!-- Any section element inside of this container is displayed as a slide -->
   <div class="slides">
     <section class="slide-1">
-      <h1>Modular frontend with NPM & pals</h1>
+      <h2>Modular frontend with NPM & pals</h2>
 
       <h3><a href="http://twitter.com/raynos">@Raynos</a></h3>
     </section>
 
+    <section>
     <section class="slide-2">
+      <h3>Tools of the trade</h3>
+
+      <ul>
+        <li>npm</li>
+        <li>browserify</li>
+        <li>unix</li>
+      </ul>
+    </section>
+
+    <section class="slide-3">
+      <h3>npm</h3>
+
+      <br>
+      <p>
+      npm is a package manager for JavaScript. It allows for
+      easily authoring small modules without dependency hell
+      </p>
+    </section>
+
+    <section class="slide-4">
+      <h3>browserify</h3>
+
+      <ul>
+        <li>commonJS for browsers</li>
+        <li>supports node_modules</li>
+        <li>creates a single JS file</li>
+      </ul>
+    </section>
+
+    <section class="slide-5">
+      <h3>unix</h3>
+
+      <br>
+      <blockquote>
+        <p>Developers should build a program out of simple parts connected by well defined interfaces, so problems are local, and parts of the program can be replaced in future versions to support new features. This rule aims to save time on debugging code that is complex, long, and unreadable.</p>
+      </blockquote> 
       
     </section>
 
+    </section>
     
     <!-- Talk (npm):
 
-  This talk is about a modular frontend which is an approach not common to most frontend developers. No jQuery, no frameworks. Instead many small, simple abstractions are used, published to npm and bundled with browserify.
+This talk is about a modular frontend which is an approach not common to most frontend developers. No jQuery, no frameworks. Instead many small, simple abstractions are used, published to npm and bundled with browserify.
 
 The NPM-style frontend prefers modularity and simple abstractions that do one thing well. THis talk includes:
 
-Various approaches to creating standalone “components” or “widgets” that are published to npm, including styles & templates.
-How to compose various modules together to build your own “framework” with your own trade offs.
-How to compose an application from smaller applications
-Build small UI components with thin interfaces that you glue together in your application.
-Your entry point is small, containing the minimal glue code and each UI component addresses its own concerns.
+ - Various approaches to creating standalone “components” or “widgets” that are published to npm, including styles & templates.
+ - How to compose various modules together to build your own “framework” with your own trade offs.
+ - How to compose an application from smaller applications
+ - Build small UI components with thin interfaces that you glue together in your application.
+ - Your entry point is small, containing the minimal glue code and each UI component addresses its own concerns.
 
-    
+
 -->
 
   </div>
