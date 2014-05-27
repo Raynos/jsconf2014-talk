@@ -266,13 +266,13 @@ body {
 
 .reveal q,
 .reveal blockquote {
-	quotes: none;
+	/*quotes: "\201C""\201D""\2018""\2019";;*/
 }
 
 .reveal blockquote {
 	display: block;
 	position: relative;
-	width: 70%;
+	width: 100%;
 	margin: 5px auto;
 	padding: 5px;
 
