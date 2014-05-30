@@ -124,9 +124,132 @@ document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.se
       </blockquote> 
       
     </section>
+    </section>
 
+    <section>
+    <section class="slide-6">
+      <h3>Using modules</h3>
+
+      <p>The why?</p>
+
+      <br>
+      <ul>
+        <li>Pick the best of everything</li>
+        <li>Use exactly what you need, no more</li>
+        <li>No lock in, freedom to switch whenever</li>
+      </ul>
+    </section>
+
+    <section class="slide-7">
+      <h3>Using modules</h3>
+
+      <p>The where?</p>
+
+      <br>
+      <ul>
+        <li><a href='https://github.com/npm-dom'>npm-dom</a></li>
+        <li><a href='https://github.com/glmodules'>glmodules</a></li>
+        <li>voxelJS</li>
+        <li>levelDB</li>
+        <li>streams handbook</li>
+      </ul>
+    </section>
+
+    <section class="slide-8">
+      <h3>Demo time</h3>
+
+      <p>Building a little app with modules</p>
+    </section>
     </section>
     
+    <section>
+    <section class="slide-9">
+      <h3>Modules & Collaboration</h3>
+
+      <br>
+      <p>People can re-use & expand on the small modules you build</p>
+    </section>
+
+    <section class="slide-10">
+      <h3>xhr</h3>
+
+      <br>
+      <p>A module that does one thing, sends http requests</p>
+    </section>
+
+    <section class="slide-11">
+      <h3>And its dependents</h3>
+
+      <br>
+      <ul>
+        <li>httpify</li>
+        <li>xhr-json</li>
+        <li>something something something</li>
+      </ul>
+    </section>
+    </section>
+
+    <section class="slide-12">
+      <h3>Building a modular "framework"</h3>
+
+      <br>
+      <ul>
+        <li>Decompose the problem space</li>
+        <li>Work from the ground up</li>
+        <li>Solve each problem well in isolation</li>
+      </ul>
+    </section>
+
+    <section>
+    <section>
+      <h3>A unidirectional approach</h3>
+
+      <br>
+      <p>Observable & Immutable state</p>
+      <ul>
+        <li>observ</li>
+        <li>observ-hash</li>
+        <li>observ-array</li>
+      </ul>
+    </section>
+
+    <section>
+      <h3>A unidirectional approach</h3>
+
+      <br>
+      <p>Representing input</p>
+      <ul>
+        <li>geval</li>
+        <li>value-event</li>
+        <li>dom-delegator</li>
+      </ul>
+    </section>
+
+    <section>
+      <h3>A unidirectional approach</h3>
+
+      <br>
+      <p>Rendering the view</p>
+      <ul>
+        <li>vtree</li>
+        <li>vdom</li>
+        <li>virtual-hyperscript</li>
+      </ul>
+    </section>
+    </section>
+
+    <section>
+      <h3>Demo time</h3>
+
+      <p>Building your own unidirectional app with modules</p>
+    </section>
+
+    <section>
+      <h3>Demo time</h3>
+
+      <p>Publishing UI components as modules</p>
+    </section>
+
     <!-- Talk (npm):
 
 This talk is about a modular frontend which is an approach not common to most frontend developers. No jQuery, no frameworks. Instead many small, simple abstractions are used, published to npm and bundled with browserify.
@@ -138,6 +261,17 @@ The NPM-style frontend prefers modularity and simple abstractions that do one th
  - How to compose an application from smaller applications
  - Build small UI components with thin interfaces that you glue together in your application.
  - Your entry point is small, containing the minimal glue code and each UI component addresses its own concerns.
+
+The four stories:
+
+ - Writing a small module, like `xhr` other people can build
+    cool stuff on top of it. (httpify & xhr-json)
+ - You can use small modules instead of frameworks today,
+    like all these modules in npm-dom.
+ - You can build your own unidirectional framework, using
+    small modules.
+ - You can build your own standalone component and publish it
+    to npm.
 
 
 -->

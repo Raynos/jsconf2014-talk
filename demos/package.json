@@ -1,0 +1,20 @@
+{
+  "name": "demos",
+  "version": "0.0.0",
+  "description": "",
+  "main": "bundle.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "by": "^0.2.3",
+    "center": "0.0.0",
+    "dom-style": "0.0.1",
+    "insert": "^1.0.1",
+    "insert-css": "^0.1.1",
+    "new-element": "0.0.2",
+    "raf": "^2.0.0"
+  }
+}
