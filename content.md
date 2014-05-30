@@ -125,3 +125,23 @@ One example of this is `xhr`. `xhr` is a module I wrote for doing
 
 It's a small callback based module at about a 120 loc, it supports
   cors and json out of the box and that's about it
+
+## Slide 11
+
+There are a couple of modules that build on top of `xhr`.
+
+httpify is a module that works in the browser & node, in node it
+  uses mikeals request and in the browser it uses xhr, it also
+  added a few more options to xhr like form encoding.
+
+This is pretty cool because you can use the same code in node 
+  and the browser.
+
+xhr-json makes JSON the default and add promises support to `xhr`.
+  This is pretty cool, because `xhr` was a small, callback based
+  module it was easy for someone else to write their own thing
+  that added promises support. The inverse would be harder.
+
+And flatsheet is actually an API client that uses `xhr`. Rather
+  then making direct HTTP calls it uses xhr for the json support
+  and cross browser CORS support.
